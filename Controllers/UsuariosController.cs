@@ -1,4 +1,6 @@
-﻿namespace ApiFinanceira.Controllers;
+﻿using ApiFinanceira.DTOs;
+
+namespace ApiFinanceira.Controllers;
 
 using Contexts;
 using Models;
@@ -27,23 +29,52 @@ public class UsuariosController : Controller
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUsuario(int id)
     {
-        var usuario = await _context.Users.FindAsync(id);
+        var usuario = await _context.Users
+            .Select(u => new
+            {
+                u.Id,
+                u.Name,
+                u.Email,
+                u.DateCreated,
+            })
+            .Where(u => u.Id == id)
+            .FirstOrDefaultAsync();
 
-        if (usuario == null)
-        {
-            return NotFound();
-        }
-
-        return usuario;
+        return Ok(usuario);
     }
 
     // POST: api/usuarios
     [HttpPost]
-    public async Task<ActionResult<User>> PostUsuario(User usuario)
+    public async Task<ActionResult> CreateUser(CreateUserDto userDto)
     {
-        _context.Users.Add(usuario);
+        if (await _context.Users.AnyAsync(u => u.Email == userDto.Email))
+        {
+            return BadRequest(new { message = "E-mail already taken!" });
+        }
+
+        var user = new User
+        {
+            Name = userDto.Name,
+            Email = userDto.Email,
+            DateCreated = DateTime.Now,
+            Active = true
+        };
+
+        user.SetPassword(userDto.Password);
+
+        _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetUsuario), new { id = usuario.Id }, usuario);
+        return Ok(new
+        {
+            message = "User created successfully!",
+            user = new
+            {
+                id = user.Id,
+                name = user.Name,
+                email = user.Email,
+                dateCreated = user.DateCreated
+            }
+        });
     }
 }

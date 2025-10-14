@@ -1,6 +1,8 @@
-﻿using ApiFinanceira.Contexts;
+﻿using System.Security.Claims;
+using ApiFinanceira.Contexts;
 using ApiFinanceira.DTOs;
 using ApiFinanceira.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +10,7 @@ namespace ApiFinanceira.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TransactionsController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -17,23 +20,45 @@ public class TransactionsController : Controller
         _context = context;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Transaction>>> GetAll()
+    private int GetUserId()
     {
-        return await _context.Transactions.ToListAsync();
+        if (!User.Identity.IsAuthenticated)
+        {
+            throw new UnauthorizedAccessException("Usuário não autenticado");
+        }
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier) ??
+                          User.FindFirst("userId") ??
+                          User.FindFirst(ClaimTypes.Sid);
+
+        if (userIdClaim == null || string.IsNullOrEmpty(userIdClaim.Value))
+        {
+            throw new UnauthorizedAccessException("User ID não encontrado no token");
+        }
+
+        if (int.TryParse(userIdClaim.Value, out int userId))
+        {
+            return userId;
+        }
+
+        throw new UnauthorizedAccessException("User ID inválido no token");
     }
 
-    [HttpGet("{userId}")]
-    public async Task<ActionResult<IEnumerable<Transaction>>> GetAllByUser(int userId)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Transaction>>> GetAllByUser()
     {
+        var userId = GetUserId();
+
         return await _context.Transactions
             .Where(t => t.UserId == userId)
             .ToListAsync();
     }
 
-    [HttpGet("mensal/{userId}")]
-    public async Task<ActionResult<Transaction>> GetMensalTransactions(int userId)
+    [HttpGet("mensal")]
+    public async Task<ActionResult<Transaction>> GetMensalTransactions()
     {
+        var userId = GetUserId();
+
         DateTime pastThirtyDays = DateTime.Today.AddDays(-30);
 
         try
@@ -70,7 +95,7 @@ public class TransactionsController : Controller
     [HttpPost]
     public async Task<ActionResult<Transaction>> Create(CreateTransactionDto transactionDto)
     {
-        var userId = transactionDto.UserId;
+        var userId = GetUserId();
 
         var userExist = await _context.Users.AnyAsync(u => u.Id == userId);
         if (!userExist)
