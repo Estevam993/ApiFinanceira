@@ -15,6 +15,10 @@ public class Transaction
     
 
     public DateTime DateCreated { get; set; } = DateTime.Now;
+    
+    public string Type { get; set; }
+    
+    public int Amount { get; set; }
 
     public int UserId { get; set; }
     

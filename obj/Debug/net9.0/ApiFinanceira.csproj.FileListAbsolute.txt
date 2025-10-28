@@ -161,3 +161,5 @@ C:\Users\Estevam\RiderProjects\ApiFinanceira\obj\Debug\net9.0\refint\ApiFinancei
 C:\Users\Estevam\RiderProjects\ApiFinanceira\obj\Debug\net9.0\ApiFinanceira.pdb
 C:\Users\Estevam\RiderProjects\ApiFinanceira\obj\Debug\net9.0\ApiFinanceira.genruntimeconfig.cache
 C:\Users\Estevam\RiderProjects\ApiFinanceira\obj\Debug\net9.0\ref\ApiFinanceira.dll
+C:\Users\Estevam\RiderProjects\ApiFinanceira\bin\Debug\net9.0\DotNetEnv.dll
+C:\Users\Estevam\RiderProjects\ApiFinanceira\bin\Debug\net9.0\Sprache.dll

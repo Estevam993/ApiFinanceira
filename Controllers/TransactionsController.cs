@@ -14,10 +14,12 @@ namespace ApiFinanceira.Controllers;
 public class TransactionsController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly HttpClient _httpClient;
 
-    public TransactionsController(ApplicationDbContext context)
+    public TransactionsController(ApplicationDbContext context, HttpClient httpClient)
     {
         _context = context;
+        _httpClient = httpClient;
     }
 
     private int GetUserId()
@@ -107,7 +109,9 @@ public class TransactionsController : Controller
         {
             Title = transactionDto.Title,
             Value = transactionDto.Value,
-            UserId = userId
+            UserId = userId,
+            Type = transactionDto.Type,
+            Amount = transactionDto.Amount,
         };
 
         try
