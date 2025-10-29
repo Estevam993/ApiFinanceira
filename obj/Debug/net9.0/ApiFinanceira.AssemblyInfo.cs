@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ApiFinanceira")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b4203b00223a9f58d7422a697bc2eb1f0d31911")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85d8ecfc67d15c5dddddaae179964c90ad6040c1")]
 [assembly: System.Reflection.AssemblyProductAttribute("ApiFinanceira")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ApiFinanceira")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

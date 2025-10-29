@@ -17,6 +17,39 @@ namespace ApiFinanceira.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
 
+            modelBuilder.Entity("ApiFinanceira.Models.AlbumReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AlbumId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Rate")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Review")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AlbumReview");
+                });
+
             modelBuilder.Entity("ApiFinanceira.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -82,6 +115,17 @@ namespace ApiFinanceira.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ApiFinanceira.Models.AlbumReview", b =>
+                {
+                    b.HasOne("ApiFinanceira.Models.User", "User")
+                        .WithMany("AlbumReviews")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ApiFinanceira.Models.Transaction", b =>
                 {
                     b.HasOne("ApiFinanceira.Models.User", "User")
@@ -95,6 +139,8 @@ namespace ApiFinanceira.Migrations
 
             modelBuilder.Entity("ApiFinanceira.Models.User", b =>
                 {
+                    b.Navigation("AlbumReviews");
+
                     b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
