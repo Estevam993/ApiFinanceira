@@ -2,6 +2,7 @@
 using ApiFinanceira.Contexts;
 using ApiFinanceira.DTOs;
 using ApiFinanceira.Models;
+using ApiFinanceira.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -114,7 +115,7 @@ public class AlbumRatingController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetMyReviews()
+    public async Task<ActionResult> GetMyReviews([FromQuery] string token)
     {
         var userId = GetUserId();
 
@@ -128,7 +129,9 @@ public class AlbumRatingController : Controller
         {
             var reviews = await _dbContext.AlbumReview.Where(r => r.UserId == userId).ToListAsync();
 
-            return Ok(reviews);
+            var formatedAlbumRating = await AlbumRatingServices.GetAlbumsInfoSpotify(reviews, token);
+
+            return Ok(formatedAlbumRating);
         }
         catch (Exception ex)
         {
